@@ -23,6 +23,7 @@ namespace Demo.DI.WPF
     public partial class MainWindow : Window
     {
         private CancellationTokenSource _cts;
+        private Task _counterServiceTask;
 
         public MainWindow(Services.CounterService counterService)
         {
@@ -30,17 +31,17 @@ namespace Demo.DI.WPF
 
             CounterService = counterService;
 
-            CounterService.ExecuteAsync(_cts.Token);
+            _counterServiceTask = CounterService.ExecuteAsync(_cts.Token);
 
             InitializeComponent();
         }
 
-        public Services.CounterService CounterService { get; }
+        public Services.CounterService CounterService { get; private set; }
 
-        protected override void OnClosing(CancelEventArgs e)
+        protected override async void OnClosing(CancelEventArgs e)
         {
             _cts.Cancel();
-            base.OnClosing(e);
+            await _counterServiceTask;
         }
     }
 }

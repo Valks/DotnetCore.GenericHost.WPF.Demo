@@ -19,7 +19,7 @@ namespace Demo.DI.WPF
     public partial class App : Application
     {
         private readonly Startup _startup;
-        private readonly IHost _host;
+        private IHost _host;
 
         public App()
         {
@@ -62,6 +62,8 @@ namespace Demo.DI.WPF
         private async void Application_Exit(object sender, ExitEventArgs e)
         {
             await _host.StopAsync();
+            _host.Dispose();
+            _host = null;
         }
     }
 }
